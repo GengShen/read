@@ -11,7 +11,11 @@ class read:
         self.contents = open(file_name, 'r').read().split(sep)
         self.length = len(self.contents)
         self.loop_flag = True
-        self.mode = mode
+        self.mode = int(mode)
+        if os.path.isfile(file_name.split('.')[0]+"_note"):
+            self.note = open(file_name.split('.')[0]+"_note",'r').read()
+        else:
+            self.note = 'note:'
     def print_line(self,e):
         os.system("clear")
         sys.stdout.write(' '*50+'\r')
@@ -26,8 +30,22 @@ class read:
             self.wait_do(word)
             if not self.loop_flag:
                 break
-            if self.mode:
+            if self.mode == 1:
                 self.rewrite(re.findall('\\b\\w+\\b',self.i))
+            elif self.mode == 2:
+                self.write_note()
+
+    def write_note(self):
+        content=raw_input(self.note)
+        if content == 'exit':
+            f = open(file_name, 'w')
+            f.write('.'.join(self.contents[self.contents.index(self.i):]))
+            f.close()
+            f = open(file_name.split('.')[0]+"_note",'w')
+            f.write(self.note)
+            f.close()
+            self.loop_flag = False
+        self.note+=content           
 
     def wait_do(self, word):
         if word == '':
